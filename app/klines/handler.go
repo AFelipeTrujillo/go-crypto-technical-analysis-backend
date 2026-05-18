@@ -35,6 +35,11 @@ func NewKlinesHandler(r models.KlinesRepositoryInterface) *KlineHandler {
 
 func (h *KlineHandler) HandleGetAll(w http.ResponseWriter, r *http.Request) {
 
+	symbol := r.URL.Query().Get("symbol")
+	if symbol == "" {
+		symbol = "BTCUSDT"
+	}
+
 	startTimestampStr := r.URL.Query().Get("start_timestamp")
 	var startTimestamp int64
 	if startTimestampStr != "" {
@@ -57,7 +62,7 @@ func (h *KlineHandler) HandleGetAll(w http.ResponseWriter, r *http.Request) {
 		endTimestamp = v
 	}
 
-	res, total, err := h.repo.GetAll(startTimestamp, endTimestamp)
+	res, total, err := h.repo.GetAll(symbol, startTimestamp, endTimestamp)
 	if err != nil {
 		api.ErrorResponse(w, http.StatusInternalServerError, err.Error())
 		return

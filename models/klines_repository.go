@@ -33,7 +33,7 @@ func (r *KlinesRepository) GetAll(symbol string, startTimestamp, endTimestamp in
 		query = query.Where("klines_1h.open_time <= ?", endTimestamp)
 	}
 
-	if err := query.Order("klines_1h.open_time DESC").Find(&klines).Error; err != nil {
+	if err := query.Order("klines_1h.open_time ASC").Find(&klines).Error; err != nil {
 		return nil, 0, err
 	}
 	return klines, len(klines), nil

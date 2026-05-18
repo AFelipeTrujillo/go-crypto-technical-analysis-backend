@@ -1,10 +1,9 @@
 package klines
 
 import (
-	"encoding/json"
-	"log"
 	"net/http"
 
+	"github.com/AFelipeTrujillo/go-crypto-technical-analysis-backend/app/api"
 	"github.com/AFelipeTrujillo/go-crypto-technical-analysis-backend/models"
 )
 
@@ -34,10 +33,10 @@ func NewKlinesHandler(r models.KlinesRepositoryInterface) *KlineHandler {
 }
 
 func (h *KlineHandler) HandleGetAll(w http.ResponseWriter, r *http.Request) {
+
 	res, total, err := h.repo.GetAll()
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		log.Fatalf(err.Error())
+		api.ErrorResponse(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
@@ -60,9 +59,5 @@ func (h *KlineHandler) HandleGetAll(w http.ResponseWriter, r *http.Request) {
 		Total:  total,
 	}
 
-	if err := json.NewEncoder(w).Encode(response); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		log.Fatalf(err.Error())
-		return
-	}
+	api.OKResponse(w, response)
 }

@@ -9,8 +9,9 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/AFelipeTrujillo/go-crypto-technical-analysis-backend/app/api/klines"
+	"github.com/AFelipeTrujillo/go-crypto-technical-analysis-backend/app/api"
 	"github.com/AFelipeTrujillo/go-crypto-technical-analysis-backend/app/database"
+	"github.com/AFelipeTrujillo/go-crypto-technical-analysis-backend/app/klines"
 	"github.com/AFelipeTrujillo/go-crypto-technical-analysis-backend/models"
 	"github.com/joho/godotenv"
 )
@@ -36,7 +37,7 @@ func main() {
 			klinesHandler.HandleGetAll(w, r)
 			return
 		}
-		w.WriteHeader(http.StatusMethodNotAllowed)
+		api.ErrorResponse(w, http.StatusMethodNotAllowed, "Status Method Not Allowed")
 	})
 
 	srv := &http.Server{

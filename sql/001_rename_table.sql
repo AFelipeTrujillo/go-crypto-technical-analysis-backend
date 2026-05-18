@@ -1,0 +1,1 @@
+ALTER TABLE btc_candles_1h RENAME TO klines_1h;

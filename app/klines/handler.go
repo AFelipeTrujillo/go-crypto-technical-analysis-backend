@@ -2,6 +2,7 @@ package klines
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/AFelipeTrujillo/go-crypto-technical-analysis-backend/app/api"
 	"github.com/AFelipeTrujillo/go-crypto-technical-analysis-backend/models"
@@ -34,7 +35,29 @@ func NewKlinesHandler(r models.KlinesRepositoryInterface) *KlineHandler {
 
 func (h *KlineHandler) HandleGetAll(w http.ResponseWriter, r *http.Request) {
 
-	res, total, err := h.repo.GetAll()
+	startTimestampStr := r.URL.Query().Get("start_timestamp")
+	var startTimestamp int64
+	if startTimestampStr != "" {
+		v, err := strconv.ParseInt(startTimestampStr, 10, 64)
+		if err != nil {
+			api.ErrorResponse(w, http.StatusBadRequest, "invalid start_timestamp")
+			return
+		}
+		startTimestamp = v
+	}
+
+	endTimestampStr := r.URL.Query().Get("end_timestamp")
+	var endTimestamp int64
+	if endTimestampStr != "" {
+		v, err := strconv.ParseInt(endTimestampStr, 10, 64)
+		if err != nil {
+			api.ErrorResponse(w, http.StatusBadRequest, "invalid end_timestamp")
+			return
+		}
+		endTimestamp = v
+	}
+
+	res, total, err := h.repo.GetAll(startTimestamp, endTimestamp)
 	if err != nil {
 		api.ErrorResponse(w, http.StatusInternalServerError, err.Error())
 		return
